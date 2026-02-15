@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field, asdict
-from datetime import datetime, time
-from typing import List, Dict, Optional
+from datetime import datetime, time, timedelta
+from typing import List, Dict, Optional, Tuple
 import json
 import os
 from pathlib import Path
@@ -34,6 +34,10 @@ class Task:
     category: str  # e.g., "feeding", "walk", "medication"
     is_medication: bool = False
     preferred_time: str = "flexible"  # "morning", "evening", "flexible"
+    is_recurring: bool = False
+    recurrence_pattern: str = "daily"  # "daily", "weekly", "every_other_day"
+    recurrence_days: List[int] = field(default_factory=list)  # 0=Mon, 6=Sun (for weekly)
+    next_due_date: Optional[datetime] = None  # Track next occurrence for recurring tasks
     
     def get_details(self) -> Dict:
         return {
@@ -45,12 +49,60 @@ class Task:
             "category": self.category,
             "is_medication": self.is_medication,
             "preferred_time": self.preferred_time,
+            "is_recurring": self.is_recurring,
+            "recurrence_pattern": self.recurrence_pattern,
+            "recurrence_days": self.recurrence_days,
         }
     
     def update_priority(self, new_priority: int) -> None:
         """Update task priority (1-5, 5 being highest)."""
         if 1 <= new_priority <= 5:
             self.priority = new_priority
+    
+    def should_occur_on_date(self, date: datetime) -> bool:
+        """Check if this recurring task should occur on the given date."""
+        if not self.is_recurring:
+            return True
+        
+        if self.recurrence_pattern == "daily":
+            return True
+        elif self.recurrence_pattern == "weekly":
+            return date.weekday() in self.recurrence_days
+        elif self.recurrence_pattern == "every_other_day":
+            # Simplified: check if day is in recurrence_days (assumes caller handles logic)
+            return date.weekday() in self.recurrence_days
+        
+        return True
+    
+    def calculate_next_due_date(self, current_date: datetime) -> Optional[datetime]:
+        """Calculate the next due date for a recurring task using timedelta.
+        
+        Args:
+            current_date: The date the task was completed
+        
+        Returns:
+            The next datetime when this task is due, or None if not recurring
+        """
+        if not self.is_recurring:
+            return None
+        
+        if self.recurrence_pattern == "daily":
+            # Next occurrence: today + 1 day
+            return current_date + timedelta(days=1)
+        elif self.recurrence_pattern == "weekly":
+            # Next occurrence: find the next matching weekday
+            days_ahead = 7
+            for days_offset in range(1, 8):
+                next_date = current_date + timedelta(days=days_offset)
+                if next_date.weekday() in self.recurrence_days:
+                    days_ahead = days_offset
+                    break
+            return current_date + timedelta(days=days_ahead)
+        elif self.recurrence_pattern == "every_other_day":
+            # Next occurrence: today + 2 days
+            return current_date + timedelta(days=2)
+        
+        return None
 
 
 # ==================== PET ====================
@@ -96,16 +148,50 @@ class ScheduledTask:
     pet_id: str
     task: Task = None
     status: str = "pending"  # pending, in_progress, completed
+    scheduled_date: Optional[datetime] = None  # Track which date this instance is for
     
-    def mark_complete(self) -> None:
-        """Mark this scheduled task as completed."""
+    def mark_complete(self, current_date: datetime = None) -> str:
+        """Mark this scheduled task as completed and reschedule if recurring.
+        
+        For recurring tasks, automatically calculates the next due date using timedelta
+        based on the recurrence pattern:
+        - daily: current_date + 1 day
+        - every_other_day: current_date + 2 days
+        - weekly: find next matching weekday
+        
+        Args:
+            current_date: The date the task was completed (defaults to scheduled_date or now)
+        
+        Returns:
+            A message describing the completion and next due date if recurring
+        """
         self.status = "completed"
+        
+        # If task is recurring, automatically schedule the next occurrence
+        if self.task and self.task.is_recurring:
+            if current_date is None:
+                current_date = self.scheduled_date or datetime.now()
+            
+            next_due = self.task.calculate_next_due_date(current_date)
+            self.task.next_due_date = next_due
+            
+            return f"✓ Completed '{self.task.name}'. Next due: {next_due.strftime('%A, %B %d, %Y') if next_due else 'N/A'}"
+        
+        return f"✓ Completed '{self.task.name if self.task else 'Unknown task'}'."
     
     def reschedule(self, new_start: time, new_end: time) -> None:
         """Reschedule task to new start and end times."""
         self.start_time = new_start
         self.end_time = new_end
         self.status = "pending"
+    
+    def get_time_string(self) -> str:
+        """Return time range as 'HH:MM-HH:MM' string."""
+        return f"{self.start_time.strftime('%H:%M')}-{self.end_time.strftime('%H:%M')}"
+    
+    def overlaps_with(self, other: 'ScheduledTask') -> bool:
+        """Check if this task overlaps with another scheduled task."""
+        return (self.start_time < other.end_time and self.end_time > other.start_time)
 
 
 # ==================== DAILY SCHEDULE ====================
@@ -115,14 +201,59 @@ class DailySchedule:
     date: datetime
     scheduled_tasks: List[ScheduledTask] = field(default_factory=list)
     explanation: str = ""
+    conflicts: List[Tuple[ScheduledTask, ScheduledTask]] = field(default_factory=list)
     
     def get_tasks_by_time(self) -> List[ScheduledTask]:
-        """Return tasks sorted by start time."""
-        return sorted(self.scheduled_tasks, key=lambda t: t.start_time)
+        """Return tasks sorted by start time (HH:MM format)."""
+        return sorted(
+            self.scheduled_tasks,
+            key=lambda t: (t.start_time.hour, t.start_time.minute)
+        )
+    
+    def get_tasks_by_pet(self, pet_id: str) -> List[ScheduledTask]:
+        """Filter and return tasks for a specific pet, sorted by time."""
+        pet_tasks = [t for t in self.scheduled_tasks if t.pet_id == pet_id]
+        return sorted(
+            pet_tasks,
+            key=lambda t: (t.start_time.hour, t.start_time.minute)
+        )
+    
+    def get_tasks_by_status(self, status: str) -> List[ScheduledTask]:
+        """Filter and return tasks by status (pending, in_progress, completed), sorted by time."""
+        status_tasks = [t for t in self.scheduled_tasks if t.status == status]
+        return sorted(
+            status_tasks,
+            key=lambda t: (t.start_time.hour, t.start_time.minute)
+        )
+    
+    def get_tasks_in_time_range(self, start_time: time, end_time: time) -> List[ScheduledTask]:
+        """Get all tasks that occur within a time range, sorted by start time."""
+        range_tasks = [
+            t for t in self.scheduled_tasks
+            if t.start_time >= start_time and t.end_time <= end_time
+        ]
+        return sorted(
+            range_tasks,
+            key=lambda t: (t.start_time.hour, t.start_time.minute)
+        )
     
     def get_explanation(self) -> str:
         """Return the scheduling explanation."""
         return self.explanation
+    
+    def has_conflicts(self) -> bool:
+        """Check if schedule has any time conflicts."""
+        return len(self.conflicts) > 0
+    
+    def get_conflict_summary(self) -> str:
+        """Return a summary of conflicts in the schedule."""
+        if not self.conflicts:
+            return "No conflicts detected."
+        
+        summary = f"Found {len(self.conflicts)} conflict(s):\n"
+        for task1, task2 in self.conflicts:
+            summary += f"  • {task1.task.name} ({task1.get_time_string()}) overlaps with {task2.task.name} ({task2.get_time_string()})\n"
+        return summary
 
 
 # ==================== TASK SCHEDULER ====================
@@ -133,10 +264,12 @@ class TaskScheduler:
     
     def schedule_tasks(self, date: datetime) -> DailySchedule:
         """Generate daily schedule based on user availability and task priorities."""
-        # Get all tasks from all pets
+        # Get all tasks from all pets that should occur on this date
         all_tasks = []
         for pet in self.pets:
-            all_tasks.extend(pet.tasks)
+            for task in pet.tasks:
+                if task.should_occur_on_date(date):
+                    all_tasks.append(task)
         
         # Prioritize tasks (medications first, then by priority)
         prioritized_tasks = self._prioritize_tasks(all_tasks)
@@ -150,6 +283,9 @@ class TaskScheduler:
             date=date,
             scheduled_tasks=scheduled_tasks,
         )
+        
+        # Detect conflicts
+        schedule.conflicts = self._detect_conflicts(scheduled_tasks)
         
         # Generate explanation
         schedule.explanation = self._generate_explanation(schedule, all_tasks, scheduled_tasks)
@@ -174,8 +310,7 @@ class TaskScheduler:
         """Fit tasks into user's available time slots."""
         scheduled_tasks = []
         
-        # Parse user availability into time slots (simplified: assumes HH:MM format)
-        # Example: "Mon-Fri: 9-5" means 9:00 AM to 5:00 PM
+        # Parse user availability into time slots
         available_slots = self._parse_availability(date)
         
         # Current time pointer for scheduling
@@ -209,12 +344,24 @@ class TaskScheduler:
                     pet_id=task.pet_id,
                     task=task,
                     status="pending",
+                    scheduled_date=date,
                 )
                 scheduled_tasks.append(scheduled_task)
                 scheduled_set.add(task.task_id)
                 current_time = task_end
         
-        return sorted(scheduled_tasks, key=lambda t: t.start_time)
+        return sorted(scheduled_tasks, key=lambda t: (t.start_time.hour, t.start_time.minute))
+    
+    def _detect_conflicts(self, scheduled_tasks: List[ScheduledTask]) -> List[Tuple[ScheduledTask, ScheduledTask]]:
+        """Detect overlapping tasks in the schedule."""
+        conflicts = []
+        
+        for i, task1 in enumerate(scheduled_tasks):
+            for task2 in scheduled_tasks[i + 1:]:
+                if task1.overlaps_with(task2):
+                    conflicts.append((task1, task2))
+        
+        return conflicts
     
     def _generate_explanation(self, schedule: DailySchedule, all_tasks: List[Task], 
                              scheduled_tasks: List[ScheduledTask]) -> str:
@@ -225,14 +372,17 @@ class TaskScheduler:
         explanation = "Daily Schedule Generated:\n\n"
         
         if scheduled_tasks:
-            explanation += "Scheduled Tasks:\n"
+            explanation += "Scheduled Tasks (sorted by time):\n"
             for st in schedule.get_tasks_by_time():
-                explanation += f"  • {st.task.name} ({st.task.pet_id}): {st.start_time.strftime('%H:%M')} - {st.end_time.strftime('%H:%M')} [Priority: {st.task.priority}]\n"
+                explanation += f"  • {st.task.name} ({st.pet_id}): {st.start_time.strftime('%H:%M')} - {st.end_time.strftime('%H:%M')} [Priority: {st.task.priority}]\n"
         
         if unscheduled:
             explanation += "\nUnable to Schedule (insufficient time):\n"
             for task in unscheduled:
                 explanation += f"  • {task.name} ({task.pet_id}) - Duration: {task.duration} min [Priority: {task.priority}]\n"
+        
+        if schedule.has_conflicts():
+            explanation += "\n" + schedule.get_conflict_summary()
         
         explanation += f"\nBased on your availability: {', '.join(self.user.availability)}"
         return explanation
@@ -302,6 +452,10 @@ class UserDataManager:
                             "category": task.category,
                             "is_medication": task.is_medication,
                             "preferred_time": task.preferred_time,
+                            "is_recurring": task.is_recurring,
+                            "recurrence_pattern": task.recurrence_pattern,
+                            "recurrence_days": task.recurrence_days,
+                            "next_due_date": task.next_due_date.isoformat() if task.next_due_date else None,
                         }
                         for task in pet.tasks
                     ],
@@ -337,6 +491,10 @@ class UserDataManager:
                     category=task_data["category"],
                     is_medication=task_data["is_medication"],
                     preferred_time=task_data.get("preferred_time", "flexible"),
+                    is_recurring=task_data.get("is_recurring", False),
+                    recurrence_pattern=task_data.get("recurrence_pattern", "daily"),
+                    recurrence_days=task_data.get("recurrence_days", []),
+                    next_due_date=datetime.fromisoformat(task_data["next_due_date"]) if task_data.get("next_due_date") else None,
                 )
                 for task_data in pet_data.get("tasks", [])
             ]

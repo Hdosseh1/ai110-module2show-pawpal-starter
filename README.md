@@ -41,3 +41,39 @@ pip install -r requirements.txt
 5. Add tests to verify key behaviors.
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
+
+## Smarter Scheduling Features
+
+The PawPal+ scheduler now includes advanced features for intelligent task planning:
+
+### Time-Based Sorting
+- Tasks are sorted by scheduled time using efficient lambda-based sorting
+- Query methods like `get_tasks_by_time()` return chronologically ordered schedules
+- Supports HH:MM time format parsing and comparison
+
+### Flexible Filtering
+- **By Pet**: `get_tasks_by_pet(pet_id)` — view tasks for a specific pet
+- **By Status**: `get_tasks_by_status(status)` — filter pending, in-progress, or completed tasks
+- **By Time Range**: `get_tasks_in_time_range(start, end)` — find tasks within a window
+- All filters return time-sorted results for easy scanning
+
+### Recurring Tasks with Auto-Rescheduling
+- Tasks can be marked as recurring (daily, weekly, every_other_day)
+- When a recurring task is marked complete, the next due date is automatically calculated
+- Uses Python's `timedelta` for accurate date arithmetic:
+  - Daily tasks: next due = today + 1 day
+  - Every-other-day: next due = today + 2 days
+  - Weekly: next due = next matching weekday
+- Next due date persists across sessions (saved/loaded with user data)
+
+### Conflict Detection
+- Identifies overlapping tasks using interval overlap logic
+- Reports all conflicts with task names and time ranges
+- Integrated into schedule explanations for transparency
+- Enables manual resolution or future automated conflict prevention
+
+### Advanced Scheduling
+- Prioritizes medications first, then by task priority, then by time preference
+- Respects user availability constraints
+- Generates detailed explanations of scheduling decisions
+- Tracks which tasks couldn't fit and why (insufficient time)

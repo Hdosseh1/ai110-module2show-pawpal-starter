@@ -20,12 +20,12 @@ The code in pawpal_system.py was refactored to allow the user class have pets an
 
 - What constraints does your scheduler consider (for example: time, priority, preferences)?
 - How did you decide which constraints mattered most?
-
+Currrently the scheduler considers the user's availability or time constraints, their preferences and the priority they put on certain tasks for instance medication. After review with some pet owners and Copilot, I determined that priority should matter most over the others since a task like medication for the pet should be considered as important despite the user's availability.
 **b. Tradeoffs**
 
 - Describe one tradeoff your scheduler makes.
 - Why is that tradeoff reasonable for this scenario?
-
+The scheduler prioritizes tasks and schedules them sequentially without rearrangin the overall layout. This makes it simple, fast and easy to understand but then it misses the chance improve the overall schedule by backtracking. For this scenario, it is a good tradeoff since we do not want to do anything too complex that might break the app for a minimal improvement.
 ---
 
 ## 3. AI Collaboration

@@ -1,0 +1,15 @@
+{
+  "user_id": "Jordan",
+  "date": "2026-02-15T04:07:30.599156",
+  "explanation": "Daily Schedule Generated:\n\nScheduled Tasks:\n  \u2022 Morning walk (Jordan-Mochi-a7b2cd): 09:00 - 09:20 [Priority: 5]\n\nBased on your availability: ",
+  "scheduled_tasks": [
+    {
+      "task_id": "cca2ca0dcd6a4c1fb061b8f58de2d464",
+      "start_time": "09:00:00",
+      "end_time": "09:20:00",
+      "pet_id": "Jordan-Mochi-a7b2cd",
+      "status": "pending",
+      "task_name": "Morning walk"
+    }
+  ]
+}

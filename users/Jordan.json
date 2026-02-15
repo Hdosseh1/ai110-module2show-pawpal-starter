@@ -1,0 +1,39 @@
+{
+  "username": "Jordan",
+  "password": "",
+  "availability": [],
+  "preferences": {},
+  "pets": [
+    {
+      "pet_id": "Jordan-Mochi-a7b2cd",
+      "name": "Mochi",
+      "species": "dog",
+      "age": 2,
+      "health_info": "Healthy",
+      "task_priorities": {},
+      "user_preferences": {},
+      "tasks": [
+        {
+          "task_id": "cca2ca0dcd6a4c1fb061b8f58de2d464",
+          "pet_id": "Jordan-Mochi-a7b2cd",
+          "name": "Morning walk",
+          "duration": 20,
+          "priority": 5,
+          "category": "general",
+          "is_medication": false,
+          "preferred_time": "flexible"
+        }
+      ]
+    },
+    {
+      "pet_id": "Jordan-Mochi-b56438",
+      "name": "Mochi",
+      "species": "dog",
+      "age": 2,
+      "health_info": "Healthy",
+      "task_priorities": {},
+      "user_preferences": {},
+      "tasks": []
+    }
+  ]
+}

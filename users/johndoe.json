@@ -33,7 +33,11 @@
           "priority": 5,
           "category": "walk",
           "is_medication": false,
-          "preferred_time": "morning"
+          "preferred_time": "morning",
+          "is_recurring": true,
+          "recurrence_pattern": "daily",
+          "recurrence_days": [],
+          "next_due_date": null
         },
         {
           "task_id": "task_002",
@@ -43,7 +47,11 @@
           "priority": 4,
           "category": "feeding",
           "is_medication": false,
-          "preferred_time": "flexible"
+          "preferred_time": "flexible",
+          "is_recurring": true,
+          "recurrence_pattern": "daily",
+          "recurrence_days": [],
+          "next_due_date": null
         },
         {
           "task_id": "task_003",
@@ -53,7 +61,11 @@
           "priority": 5,
           "category": "walk",
           "is_medication": false,
-          "preferred_time": "evening"
+          "preferred_time": "evening",
+          "is_recurring": true,
+          "recurrence_pattern": "daily",
+          "recurrence_days": [],
+          "next_due_date": null
         }
       ]
     },
@@ -80,7 +92,11 @@
           "priority": 5,
           "category": "medication",
           "is_medication": true,
-          "preferred_time": "morning"
+          "preferred_time": "morning",
+          "is_recurring": true,
+          "recurrence_pattern": "daily",
+          "recurrence_days": [],
+          "next_due_date": "2026-02-16T18:31:37.490790"
         },
         {
           "task_id": "task_005",
@@ -90,7 +106,11 @@
           "priority": 5,
           "category": "feeding",
           "is_medication": false,
-          "preferred_time": "morning"
+          "preferred_time": "morning",
+          "is_recurring": true,
+          "recurrence_pattern": "daily",
+          "recurrence_days": [],
+          "next_due_date": null
         },
         {
           "task_id": "task_006",
@@ -100,7 +120,11 @@
           "priority": 2,
           "category": "play",
           "is_medication": false,
-          "preferred_time": "flexible"
+          "preferred_time": "flexible",
+          "is_recurring": false,
+          "recurrence_pattern": "daily",
+          "recurrence_days": [],
+          "next_due_date": null
         }
       ]
     }
