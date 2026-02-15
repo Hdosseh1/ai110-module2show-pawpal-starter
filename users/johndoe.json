@@ -1,0 +1,108 @@
+{
+  "username": "johndoe",
+  "password": "secure123",
+  "availability": [
+    "9:00-17:00"
+  ],
+  "preferences": {
+    "pet_care_style": "balanced",
+    "preferred_times": "morning"
+  },
+  "pets": [
+    {
+      "pet_id": "pet_001",
+      "name": "Max",
+      "species": "Dog",
+      "age": 3,
+      "health_info": "Healthy, needs daily walks",
+      "task_priorities": {
+        "walk": 5,
+        "feeding": 4,
+        "play": 3
+      },
+      "user_preferences": {
+        "preferred_walk_time": "morning",
+        "frequency": "2x daily"
+      },
+      "tasks": [
+        {
+          "task_id": "task_001",
+          "pet_id": "pet_001",
+          "name": "Morning Walk",
+          "duration": 30,
+          "priority": 5,
+          "category": "walk",
+          "is_medication": false,
+          "preferred_time": "morning"
+        },
+        {
+          "task_id": "task_002",
+          "pet_id": "pet_001",
+          "name": "Feeding",
+          "duration": 15,
+          "priority": 4,
+          "category": "feeding",
+          "is_medication": false,
+          "preferred_time": "flexible"
+        },
+        {
+          "task_id": "task_003",
+          "pet_id": "pet_001",
+          "name": "Evening Walk",
+          "duration": 30,
+          "priority": 5,
+          "category": "walk",
+          "is_medication": false,
+          "preferred_time": "evening"
+        }
+      ]
+    },
+    {
+      "pet_id": "pet_002",
+      "name": "Whiskers",
+      "species": "Cat",
+      "age": 5,
+      "health_info": "Healthy, on medication",
+      "task_priorities": {
+        "feeding": 5,
+        "medication": 5,
+        "play": 2
+      },
+      "user_preferences": {
+        "preferred_feeding_time": "morning and evening"
+      },
+      "tasks": [
+        {
+          "task_id": "task_004",
+          "pet_id": "pet_002",
+          "name": "Morning Medication",
+          "duration": 5,
+          "priority": 5,
+          "category": "medication",
+          "is_medication": true,
+          "preferred_time": "morning"
+        },
+        {
+          "task_id": "task_005",
+          "pet_id": "pet_002",
+          "name": "Morning Feeding",
+          "duration": 10,
+          "priority": 5,
+          "category": "feeding",
+          "is_medication": false,
+          "preferred_time": "morning"
+        },
+        {
+          "task_id": "task_006",
+          "pet_id": "pet_002",
+          "name": "Playtime",
+          "duration": 20,
+          "priority": 2,
+          "category": "play",
+          "is_medication": false,
+          "preferred_time": "flexible"
+        }
+      ]
+    }
+  ]
+}

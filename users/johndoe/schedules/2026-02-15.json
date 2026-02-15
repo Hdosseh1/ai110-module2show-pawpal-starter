@@ -1,0 +1,55 @@
+{
+  "user_id": "johndoe",
+  "date": "2026-02-15T03:46:17.088704",
+  "explanation": "Daily Schedule Generated:\n\nScheduled Tasks:\n  \u2022 Morning Medication (pet_002): 09:00 - 09:05 [Priority: 5]\n  \u2022 Morning Walk (pet_001): 09:05 - 09:35 [Priority: 5]\n  \u2022 Morning Feeding (pet_002): 09:35 - 09:45 [Priority: 5]\n  \u2022 Evening Walk (pet_001): 09:45 - 10:15 [Priority: 5]\n  \u2022 Feeding (pet_001): 10:15 - 10:30 [Priority: 4]\n  \u2022 Playtime (pet_002): 10:30 - 10:50 [Priority: 2]\n\nBased on your availability: 9:00-17:00",
+  "scheduled_tasks": [
+    {
+      "task_id": "task_004",
+      "start_time": "09:00:00",
+      "end_time": "09:05:00",
+      "pet_id": "pet_002",
+      "status": "pending",
+      "task_name": "Morning Medication"
+    },
+    {
+      "task_id": "task_001",
+      "start_time": "09:05:00",
+      "end_time": "09:35:00",
+      "pet_id": "pet_001",
+      "status": "pending",
+      "task_name": "Morning Walk"
+    },
+    {
+      "task_id": "task_005",
+      "start_time": "09:35:00",
+      "end_time": "09:45:00",
+      "pet_id": "pet_002",
+      "status": "pending",
+      "task_name": "Morning Feeding"
+    },
+    {
+      "task_id": "task_003",
+      "start_time": "09:45:00",
+      "end_time": "10:15:00",
+      "pet_id": "pet_001",
+      "status": "pending",
+      "task_name": "Evening Walk"
+    },
+    {
+      "task_id": "task_002",
+      "start_time": "10:15:00",
+      "end_time": "10:30:00",
+      "pet_id": "pet_001",
+      "status": "pending",
+      "task_name": "Feeding"
+    },
+    {
+      "task_id": "task_006",
+      "start_time": "10:30:00",
+      "end_time": "10:50:00",
+      "pet_id": "pet_002",
+      "status": "pending",
+      "task_name": "Playtime"
+    }
+  ]
+}
