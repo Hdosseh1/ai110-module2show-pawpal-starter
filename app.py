@@ -2,6 +2,11 @@ import streamlit as st
 
 st.set_page_config(page_title="PawPal+", page_icon="🐾", layout="centered")
 
+# Import core PawPal system classes for later integration
+from pawpal_system import User, Pet, Task, TaskScheduler, UserDataManager
+from datetime import datetime
+import uuid
+
 st.title("🐾 PawPal+")
 
 st.markdown(
@@ -43,11 +48,36 @@ owner_name = st.text_input("Owner name", value="Jordan")
 pet_name = st.text_input("Pet name", value="Mochi")
 species = st.selectbox("Species", ["dog", "cat", "other"])
 
-st.markdown("### Tasks")
-st.caption("Add a few tasks. In your final version, these should feed into your scheduler.")
+st.markdown("### Pets")
+st.caption("Create a pet profile that tasks can be attached to.")
 
-if "tasks" not in st.session_state:
-    st.session_state.tasks = []
+# Ensure a User object exists in session_state
+if 'pawpal_user' not in st.session_state:
+    st.session_state['pawpal_user'] = User(username=owner_name, password='')
+else:
+    # keep username in sync with input
+    if st.session_state['pawpal_user'].username != owner_name:
+        st.session_state['pawpal_user'].username = owner_name
+
+user: User = st.session_state['pawpal_user']
+
+colp1, colp2 = st.columns(2)
+with colp1:
+    pet_age = st.number_input("Pet age", min_value=0, max_value=50, value=2)
+with colp2:
+    health_info = st.text_input("Health info", value="Healthy")
+
+if st.button("Add pet"):
+    pet_id = f"{user.username}-{pet_name}-{uuid.uuid4().hex[:6]}"
+    pet = Pet(pet_id=pet_id, name=pet_name, species=species, age=int(pet_age), health_info=health_info)
+    user.pets.append(pet)
+    st.success(f"Added pet: {pet.name}")
+
+st.markdown("### Tasks")
+st.caption("Add a task and attach it to one of your pets.")
+
+pet_options = [p.name for p in user.pets] if user.pets else [pet_name]
+selected_pet_name = st.selectbox("Select pet", options=pet_options, index=0)
 
 col1, col2, col3 = st.columns(3)
 with col1:
@@ -55,34 +85,60 @@ with col1:
 with col2:
     duration = st.number_input("Duration (minutes)", min_value=1, max_value=240, value=20)
 with col3:
-    priority = st.selectbox("Priority", ["low", "medium", "high"], index=2)
+    priority_str = st.selectbox("Priority", ["low", "medium", "high"], index=2)
+
+priority_map = {"low": 2, "medium": 3, "high": 5}
 
 if st.button("Add task"):
-    st.session_state.tasks.append(
-        {"title": task_title, "duration_minutes": int(duration), "priority": priority}
-    )
+    # find pet object
+    pet_obj = None
+    for p in user.pets:
+        if p.name == selected_pet_name:
+            pet_obj = p
+            break
+    # if no pet exists yet, create one from quick inputs
+    if pet_obj is None:
+        pet_id = f"{user.username}-{selected_pet_name}-{uuid.uuid4().hex[:6]}"
+        pet_obj = Pet(pet_id=pet_id, name=selected_pet_name, species=species, age=int(pet_age), health_info=health_info)
+        user.pets.append(pet_obj)
 
-if st.session_state.tasks:
-    st.write("Current tasks:")
-    st.table(st.session_state.tasks)
-else:
-    st.info("No tasks yet. Add one above.")
+    task_id = uuid.uuid4().hex
+    task = Task(
+        task_id=task_id,
+        pet_id=pet_obj.pet_id,
+        name=task_title,
+        duration=int(duration),
+        priority=priority_map.get(priority_str, 3),
+        category="general",
+    )
+    pet_obj.add_task(task)
+    st.success(f"Added task '{task.name}' to {pet_obj.name}")
+
+# Display current tasks per pet
+for p in user.pets:
+    if p.tasks:
+        st.write(f"Tasks for {p.name}:")
+        st.table([t.get_details() for t in p.tasks])
+    else:
+        st.info(f"No tasks yet for {p.name}.")
 
 st.divider()
 
 st.subheader("Build Schedule")
-st.caption("This button should call your scheduling logic once you implement it.")
+st.caption("This button will generate a schedule using the backend scheduler.")
 
 if st.button("Generate schedule"):
-    st.warning(
-        "Not implemented yet. Next step: create your scheduling logic (classes/functions) and call it here."
-    )
-    st.markdown(
-        """
-Suggested approach:
-1. Design your UML (draft).
-2. Create class stubs (no logic).
-3. Implement scheduling behavior.
-4. Connect your scheduler here and display results.
-"""
-    )
+    # ensure user exists in session
+    user = st.session_state.get('pawpal_user')
+    if not user:
+        st.error("No user found. Please set owner name and add a pet first.")
+    else:
+        scheduler = TaskScheduler(user)
+        schedule = scheduler.schedule_tasks(datetime.now())
+        st.subheader("Schedule Explanation")
+        st.text(schedule.get_explanation())
+        # Optionally persist schedule
+        udm = UserDataManager()
+        udm.save_user(user)
+        udm.save_schedule(schedule)
+        st.success("Schedule generated and saved.")
