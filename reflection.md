@@ -6,12 +6,12 @@
 
 - Briefly describe your initial UML design.
 - What classes did you include, and what responsibilities did you assign to each?
-
+My initial UML has about 7 classes each handling different but linked tasks. There is a class for the task scheduler that schedules for the user listed in the user class. The task scheduler does references the pet class which has a task. The user data is managed by the user manager class.
 **b. Design changes**
 
 - Did your design change during implementation?
 - If yes, describe at least one change and why you made it.
-
+The code in pawpal_system.py was refactored to allow the user class have pets and tasks instead of passing them separately. The task scheduler also just extracts tasks from the user instead of looking up task ids from the pet.
 ---
 
 ## 2. Scheduling Logic and Tradeoffs
