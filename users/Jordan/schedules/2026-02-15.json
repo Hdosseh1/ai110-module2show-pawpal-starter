@@ -1,39 +1,31 @@
 {
   "user_id": "Jordan",
-  "date": "2026-02-15T20:53:08.154221",
-  "explanation": "Daily Schedule Generated:\n\nScheduled Tasks (sorted by time):\n  \u2022 Morning walk (Jordan-Mochi-b17aa3): 08:30 - 08:50 [Priority: 5]\n  \u2022 Morning walk (Jordan-Mochi-b17aa3): 08:50 - 09:10 [Priority: 5]\n  \u2022 medication (Jordan-Mochi-b17aa3): 09:10 - 09:25 [Priority: 5]\n  \u2022 medication (Jordan-John-d7fd81): 09:25 - 09:40 [Priority: 5]\n\nBased on your availability: 08:30-11:15",
+  "date": "2026-02-15T21:15:10.886056",
+  "explanation": "Daily Schedule Generated:\n\nScheduled Tasks (sorted by time):\n  \u2022 Morning walk (Jordan-Mochi-78a19a): 09:00 - 09:20 [Priority: 5]\n  \u2022 Morning walk (Jordan-Mochi-78a19a): 09:20 - 09:40 [Priority: 5]\n  \u2022 Morning walk (Jordan-John -713a28): 09:40 - 10:00 [Priority: 5]\n\nBased on your availability: 09:00-17:00",
   "scheduled_tasks": [
     {
-      "task_id": "04076471fa9f48179b1348c164cc68f1",
-      "start_time": "08:30:00",
-      "end_time": "08:50:00",
-      "pet_id": "Jordan-Mochi-b17aa3",
+      "task_id": "cd5e94d13311466b8f32f67c73dcd18d",
+      "start_time": "09:00:00",
+      "end_time": "09:20:00",
+      "pet_id": "Jordan-Mochi-78a19a",
       "status": "pending",
       "task_name": "Morning walk"
     },
     {
-      "task_id": "01980898a5c84ac988c2d225fb1c7b55",
-      "start_time": "08:50:00",
-      "end_time": "09:10:00",
-      "pet_id": "Jordan-Mochi-b17aa3",
-      "status": "pending",
-      "task_name": "Morning walk"
-    },
-    {
-      "task_id": "a5232c1051174b58a829dfc6ffd793da",
-      "start_time": "09:10:00",
-      "end_time": "09:25:00",
-      "pet_id": "Jordan-Mochi-b17aa3",
-      "status": "pending",
-      "task_name": "medication"
-    },
-    {
-      "task_id": "7b4ff1f1af9e4b3ea5804625156538dc",
-      "start_time": "09:25:00",
+      "task_id": "ef54a82622ba47279424ad060d39706e",
+      "start_time": "09:20:00",
       "end_time": "09:40:00",
-      "pet_id": "Jordan-John-d7fd81",
+      "pet_id": "Jordan-Mochi-78a19a",
       "status": "pending",
-      "task_name": "medication"
+      "task_name": "Morning walk"
+    },
+    {
+      "task_id": "1c175cd1481a41938303c018fa925df8",
+      "start_time": "09:40:00",
+      "end_time": "10:00:00",
+      "pet_id": "Jordan-John -713a28",
+      "status": "pending",
+      "task_name": "Morning walk"
     }
   ]
 }
