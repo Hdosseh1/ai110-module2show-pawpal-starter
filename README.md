@@ -139,3 +139,7 @@ The system demonstrates strong reliability:
 
 The scheduler handles typical daily use cases (5-15 tasks/day) with high confidence. Edge cases around date boundaries and task conflicts are well-covered. For production deployment, consider adding load testing and user interface integration tests.
 
+# Demo
+![Demo](demo.png)
+
+  

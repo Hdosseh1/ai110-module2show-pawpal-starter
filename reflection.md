@@ -34,12 +34,12 @@ The scheduler prioritizes tasks and schedules them sequentially without rearrang
 
 - How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
 - What kinds of prompts or questions were most helpful?
-
+I used Ai to help me dign the UML, suggest better logi methods and polish the UI. I realized that giving the AI tools more descriptive promts and adding context helps them work better.
 **b. Judgment and verification**
 
 - Describe one moment where you did not accept an AI suggestion as-is.
 - How did you evaluate or verify what the AI suggested?
-
+I asked the AI for suggestions regarding the UI design and although the suggested code was correct, it had syntax errors. I had to reject it and ask it to redo it since i read through it and realised its suggestions were wrongly indented.
 ---
 
 ## 4. Testing and Verification
@@ -48,12 +48,13 @@ The scheduler prioritizes tasks and schedules them sequentially without rearrang
 
 - What behaviors did you test?
 - Why were these tests important?
-
+The sorting correctness, recurrence logic and conflict detedtion were the main things i tested.
+These allowed me ensure that the system had a strong reliability and that the core actions were implemented.
 **b. Confidence**
 
 - How confident are you that your scheduler works correctly?
 - What edge cases would you test next if you had more time?
-
+I run a couple of pytests and deployed the app online too and it still works well. i would like to test if multiple users could be added to a joint account.
 ---
 
 ## 5. Reflection
@@ -61,11 +62,12 @@ The scheduler prioritizes tasks and schedules them sequentially without rearrang
 **a. What went well**
 
 - What part of this project are you most satisfied with?
-
+The logic and algorithims were implemented well and run withour a single error message.
 **b. What you would improve**
 
 - If you had another iteration, what would you improve or redesign?
-
+The UI
 **c. Key takeaway**
 
 - What is one important thing you learned about designing systems or working with AI on this project?
+You always have to read through the code AI gives you - it may seem right at first glance but requires your supervision and judgement to make it better.
