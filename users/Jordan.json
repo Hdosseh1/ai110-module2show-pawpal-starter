@@ -7,8 +7,18 @@
   "preferences": {},
   "pets": [
     {
-      "pet_id": "Jordan-Mochi-78a19a",
-      "name": "Mochi",
+      "pet_id": "Jordan-mochi-0784a7",
+      "name": "mochi",
+      "species": "dog",
+      "age": 2,
+      "health_info": "Healthy",
+      "task_priorities": {},
+      "user_preferences": {},
+      "tasks": []
+    },
+    {
+      "pet_id": "Jordan-john-978d30",
+      "name": "john",
       "species": "dog",
       "age": 2,
       "health_info": "Healthy",
@@ -16,47 +26,8 @@
       "user_preferences": {},
       "tasks": [
         {
-          "task_id": "cd5e94d13311466b8f32f67c73dcd18d",
-          "pet_id": "Jordan-Mochi-78a19a",
-          "name": "Morning walk",
-          "duration": 20,
-          "priority": 5,
-          "category": "general",
-          "is_medication": false,
-          "preferred_time": "flexible",
-          "is_recurring": false,
-          "recurrence_pattern": "daily",
-          "recurrence_days": [],
-          "next_due_date": null
-        },
-        {
-          "task_id": "ef54a82622ba47279424ad060d39706e",
-          "pet_id": "Jordan-Mochi-78a19a",
-          "name": "Morning walk",
-          "duration": 20,
-          "priority": 5,
-          "category": "general",
-          "is_medication": false,
-          "preferred_time": "flexible",
-          "is_recurring": false,
-          "recurrence_pattern": "daily",
-          "recurrence_days": [],
-          "next_due_date": null
-        }
-      ]
-    },
-    {
-      "pet_id": "Jordan-John -713a28",
-      "name": "John ",
-      "species": "cat",
-      "age": 2,
-      "health_info": "Healthy",
-      "task_priorities": {},
-      "user_preferences": {},
-      "tasks": [
-        {
-          "task_id": "1c175cd1481a41938303c018fa925df8",
-          "pet_id": "Jordan-John -713a28",
+          "task_id": "18cbaa6e50e941e69a93a1f1548200fd",
+          "pet_id": "Jordan-john-978d30",
           "name": "Morning walk",
           "duration": 20,
           "priority": 5,
