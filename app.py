@@ -4,7 +4,7 @@ st.set_page_config(page_title="PawPal+", page_icon="🐾", layout="centered")
 
 # Import core PawPal system classes for later integration
 from pawpal_system import User, Pet, Task, TaskScheduler, UserDataManager
-from datetime import datetime
+from datetime import datetime, time
 import uuid
 
 st.title("🐾 PawPal+")
@@ -115,30 +115,106 @@ if st.button("Add task"):
     st.success(f"Added task '{task.name}' to {pet_obj.name}")
 
 # Display current tasks per pet
-for p in user.pets:
-    if p.tasks:
-        st.write(f"Tasks for {p.name}:")
-        st.table([t.get_details() for t in p.tasks])
-    else:
-        st.info(f"No tasks yet for {p.name}.")
+st.markdown("### Current Task Overview")
+if user.pets:
+    for p in user.pets:
+        with st.expander(f"📋 {p.name} ({len(p.tasks)} tasks)", expanded=False):
+            if p.tasks:
+                # Sort and display tasks
+                task_data = []
+                for t in p.tasks:
+                    task_data.append({
+                        "Task": t.name,
+                        "Duration (min)": t.duration,
+                        "Priority": "🔴 High" if t.priority >= 4 else "🟡 Medium" if t.priority >= 3 else "🟢 Low",
+                        "Category": t.category,
+                        "Medication": "✓" if t.is_medication else "✗",
+                        "Recurring": "✓" if t.is_recurring else "✗"
+                    })
+                st.dataframe(task_data, use_container_width=True, hide_index=True)
+            else:
+                st.info(f"No tasks yet for {p.name}.")
+else:
+    st.info("No pets added yet. Add a pet to get started!")
 
 st.divider()
 
 st.subheader("Build Schedule")
-st.caption("This button will generate a schedule using the backend scheduler.")
+st.caption("Generate a daily schedule based on your availability and pet tasks.")
 
-if st.button("Generate schedule"):
+col_avail1, col_avail2 = st.columns(2)
+with col_avail1:
+    avail_start = st.time_input("Available from", value=time(9, 0))
+with col_avail2:
+    avail_end = st.time_input("Available until", value=time(17, 0))
+
+if st.button("Generate schedule", type="primary"):
     # ensure user exists in session
     user = st.session_state.get('pawpal_user')
-    if not user:
-        st.error("No user found. Please set owner name and add a pet first.")
+    if not user or not user.pets:
+        st.error("❌ No user or pets found. Please add a pet and tasks first.")
+    elif not any(any(p.tasks) for p in user.pets):
+        st.error("❌ No tasks found. Please add at least one task.")
     else:
+        # Set user availability
+        user.availability = [f"{avail_start.strftime('%H:%M')}-{avail_end.strftime('%H:%M')}"]
+        
         scheduler = TaskScheduler(user)
         schedule = scheduler.schedule_tasks(datetime.now())
-        st.subheader("Schedule Explanation")
-        st.text(schedule.get_explanation())
-        # Optionally persist schedule
+        
+        # Show schedule results
+        st.divider()
+        st.markdown("## 📅 Generated Schedule")
+        
+        # Display scheduled tasks
+        if schedule.scheduled_tasks:
+            st.markdown("### Tasks Scheduled (sorted by time)")
+            
+            task_rows = []
+            for st_task in schedule.get_tasks_by_time():
+                task_rows.append({
+                    "Time": f"{st_task.start_time.strftime('%H:%M')} - {st_task.end_time.strftime('%H:%M')}",
+                    "Task": st_task.task.name,
+                    "Pet": st_task.pet_id,
+                    "Priority": "🔴 High" if st_task.task.priority >= 4 else "🟡 Medium" if st_task.task.priority >= 3 else "🟢 Low",
+                    "Duration": f"{st_task.task.duration} min",
+                    "Status": st_task.status
+                })
+            
+            st.dataframe(task_rows, use_container_width=True, hide_index=True)
+            st.success(f"✓ Successfully scheduled {len(schedule.scheduled_tasks)} task(s).")
+        else:
+            st.warning("⚠️ No tasks could be scheduled in the available time.")
+        
+        # Check for conflicts
+        if schedule.has_conflicts():
+            st.warning("⚠️ Schedule Conflicts Detected")
+            conflict_text = schedule.get_conflict_summary()
+            st.text(conflict_text)
+        else:
+            st.success("✓ No time conflicts detected.")
+        
+        # Show unscheduled tasks (if any)
+        scheduled_ids = {t.task_id for t in schedule.scheduled_tasks}
+        all_tasks = [t for p in user.pets for t in p.tasks]
+        unscheduled = [t for t in all_tasks if t.task_id not in scheduled_ids]
+        
+        if unscheduled:
+            st.info(f"ℹ️ {len(unscheduled)} task(s) could not fit in your available time")
+            unscheduled_rows = [{
+                "Task": t.name,
+                "Pet": t.pet_id,
+                "Duration (min)": t.duration,
+                "Priority": "🔴 High" if t.priority >= 4 else "🟡 Medium" if t.priority >= 3 else "🟢 Low",
+            } for t in unscheduled]
+            st.dataframe(unscheduled_rows, use_container_width=True, hide_index=True)
+        
+        # Display full explanation
+        with st.expander("📝 Detailed Explanation", expanded=False):
+            st.text(schedule.get_explanation())
+        
+        # Persist schedule
         udm = UserDataManager()
         udm.save_user(user)
         udm.save_schedule(schedule)
-        st.success("Schedule generated and saved.")
+        st.success("✓ Schedule generated and saved.")

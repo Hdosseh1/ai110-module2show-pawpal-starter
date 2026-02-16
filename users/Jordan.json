@@ -1,11 +1,13 @@
 {
   "username": "Jordan",
   "password": "",
-  "availability": [],
+  "availability": [
+    "08:30-11:15"
+  ],
   "preferences": {},
   "pets": [
     {
-      "pet_id": "Jordan-Mochi-a7b2cd",
+      "pet_id": "Jordan-Mochi-b17aa3",
       "name": "Mochi",
       "species": "dog",
       "age": 2,
@@ -14,26 +16,73 @@
       "user_preferences": {},
       "tasks": [
         {
-          "task_id": "cca2ca0dcd6a4c1fb061b8f58de2d464",
-          "pet_id": "Jordan-Mochi-a7b2cd",
+          "task_id": "04076471fa9f48179b1348c164cc68f1",
+          "pet_id": "Jordan-Mochi-b17aa3",
           "name": "Morning walk",
           "duration": 20,
           "priority": 5,
           "category": "general",
           "is_medication": false,
-          "preferred_time": "flexible"
+          "preferred_time": "flexible",
+          "is_recurring": false,
+          "recurrence_pattern": "daily",
+          "recurrence_days": [],
+          "next_due_date": null
+        },
+        {
+          "task_id": "01980898a5c84ac988c2d225fb1c7b55",
+          "pet_id": "Jordan-Mochi-b17aa3",
+          "name": "Morning walk",
+          "duration": 20,
+          "priority": 5,
+          "category": "general",
+          "is_medication": false,
+          "preferred_time": "flexible",
+          "is_recurring": false,
+          "recurrence_pattern": "daily",
+          "recurrence_days": [],
+          "next_due_date": null
+        },
+        {
+          "task_id": "a5232c1051174b58a829dfc6ffd793da",
+          "pet_id": "Jordan-Mochi-b17aa3",
+          "name": "medication",
+          "duration": 15,
+          "priority": 5,
+          "category": "general",
+          "is_medication": false,
+          "preferred_time": "flexible",
+          "is_recurring": false,
+          "recurrence_pattern": "daily",
+          "recurrence_days": [],
+          "next_due_date": null
         }
       ]
     },
     {
-      "pet_id": "Jordan-Mochi-b56438",
-      "name": "Mochi",
-      "species": "dog",
-      "age": 2,
+      "pet_id": "Jordan-John-d7fd81",
+      "name": "John",
+      "species": "cat",
+      "age": 1,
       "health_info": "Healthy",
       "task_priorities": {},
       "user_preferences": {},
-      "tasks": []
+      "tasks": [
+        {
+          "task_id": "7b4ff1f1af9e4b3ea5804625156538dc",
+          "pet_id": "Jordan-John-d7fd81",
+          "name": "medication",
+          "duration": 15,
+          "priority": 5,
+          "category": "general",
+          "is_medication": false,
+          "preferred_time": "flexible",
+          "is_recurring": false,
+          "recurrence_pattern": "daily",
+          "recurrence_days": [],
+          "next_due_date": null
+        }
+      ]
     }
   ]
 }

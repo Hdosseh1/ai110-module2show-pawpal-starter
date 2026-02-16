@@ -1,15 +1,39 @@
 {
   "user_id": "Jordan",
-  "date": "2026-02-15T04:07:30.599156",
-  "explanation": "Daily Schedule Generated:\n\nScheduled Tasks:\n  \u2022 Morning walk (Jordan-Mochi-a7b2cd): 09:00 - 09:20 [Priority: 5]\n\nBased on your availability: ",
+  "date": "2026-02-15T20:53:08.154221",
+  "explanation": "Daily Schedule Generated:\n\nScheduled Tasks (sorted by time):\n  \u2022 Morning walk (Jordan-Mochi-b17aa3): 08:30 - 08:50 [Priority: 5]\n  \u2022 Morning walk (Jordan-Mochi-b17aa3): 08:50 - 09:10 [Priority: 5]\n  \u2022 medication (Jordan-Mochi-b17aa3): 09:10 - 09:25 [Priority: 5]\n  \u2022 medication (Jordan-John-d7fd81): 09:25 - 09:40 [Priority: 5]\n\nBased on your availability: 08:30-11:15",
   "scheduled_tasks": [
     {
-      "task_id": "cca2ca0dcd6a4c1fb061b8f58de2d464",
-      "start_time": "09:00:00",
-      "end_time": "09:20:00",
-      "pet_id": "Jordan-Mochi-a7b2cd",
+      "task_id": "04076471fa9f48179b1348c164cc68f1",
+      "start_time": "08:30:00",
+      "end_time": "08:50:00",
+      "pet_id": "Jordan-Mochi-b17aa3",
       "status": "pending",
       "task_name": "Morning walk"
+    },
+    {
+      "task_id": "01980898a5c84ac988c2d225fb1c7b55",
+      "start_time": "08:50:00",
+      "end_time": "09:10:00",
+      "pet_id": "Jordan-Mochi-b17aa3",
+      "status": "pending",
+      "task_name": "Morning walk"
+    },
+    {
+      "task_id": "a5232c1051174b58a829dfc6ffd793da",
+      "start_time": "09:10:00",
+      "end_time": "09:25:00",
+      "pet_id": "Jordan-Mochi-b17aa3",
+      "status": "pending",
+      "task_name": "medication"
+    },
+    {
+      "task_id": "7b4ff1f1af9e4b3ea5804625156538dc",
+      "start_time": "09:25:00",
+      "end_time": "09:40:00",
+      "pet_id": "Jordan-John-d7fd81",
+      "status": "pending",
+      "task_name": "medication"
     }
   ]
 }
